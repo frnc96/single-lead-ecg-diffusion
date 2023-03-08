@@ -34,7 +34,7 @@ train_configuration = {
 PLOTS_FOLDER = "plots"
 ACTION = 'train' 
 USE_WEIGHTS_AND_BIASES = True
-WANDB_KEY = ''  # add your API key here
+WANDB_KEY = '796a636ca8878cd6c1494d1282f73496c43e6b31'  # add your API key here
 ############################################
          
 if USE_WEIGHTS_AND_BIASES:
@@ -133,7 +133,8 @@ def get_dataloader(target='train', batch_size=train_configuration['BATCH_SIZE'],
 mse = torch.nn.MSELoss()
 diffusion = Diffusion(device=device)
 
-def train_diffusion(train_dataset: TensorDataset, train_dataloader, validation_dataset: TensorDataset, validation_dataloader):
+
+def train_diffusion(train_dataloader):
     model = UNet().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=train_configuration['LEARNING_RATE'], betas=(0.5, 0.999))
     train_loss_plot = []
@@ -166,9 +167,10 @@ def train_diffusion(train_dataset: TensorDataset, train_dataloader, validation_d
         else:
             train_loss_plot.append(train_loss_average)
             print(f'Finished epoch {epoch}. Average loss for this epoch: {train_loss_average:05f}')
-        
+
+
 if ACTION == "train":
     train_dataset, train_dataloader = get_dataloader(target='train')
     validation_dataset, validation_dataloader = get_dataloader(target='validation', batch_size=1, shuffle=False)
-    train_diffusion(train_dataset, train_dataloader, validation_dataset, validation_dataloader)
+    train_diffusion(train_dataset)
 
